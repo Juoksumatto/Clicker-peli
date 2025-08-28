@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker peli</title>
+    <link rel="stylesheet" href="tyyli.css">    
+</head>
+<body>
+      <p class="nimi">Moon clicker</p>
+<div id="game">
+  <div class="upgrades">
+      <button class="button5" type="button" id="Autoupgrade1" disabled>
+        <img src="Upgrade1.png" alt="Upgrade1" width="40" height="40">
+      </button>
+      <p id="Upgradeautomatic1"></p>
+
+      <button class="button6" type="button" id="AutoUpgrade" disabled>
+        <img src="Upgrade.png" alt="Upgrade" width="40" height="40">
+      </button>
+      <p id="Upgradeautomatics"></p>
+
+      <button class="button7" type="button" id="Autoupgrade3" disabled>
+        <img src="Upgrade3.png" alt="Upgrade3" width="40" height="40">
+      </button>
+      <p id="Upgradeautomatic3"></p>
+  </div>
+
+  <div class="moon">
+      <p class="Click" id="Clicks"></p>
+      <button class="button1" type="button" id="Kuu">
+          <img src="moon.png" alt="Kuu" width="200" height="200">
+      </button>
+  </div>
+
+  <div class="shop">
+      <button class="button2" type="button" id="Automatic">
+          <img src="cursor.png" alt="Automatic" width="40" height="40">
+      </button>
+      <p id="Automaticcost">Hinta:</p>
+      <p id="Automaticlevel">Taso:</p>
+
+      <button class="button3" type="button" id="Asteroidi">
+          <img src="Asteroid.png" alt="Asteroidi" width="40" height="40">
+      </button>
+      <p id="Asteroidcost">Hinta:</p>
+      <p id="Asteroidlevel">Taso:</p>
+      
+      <button class="button4" type="button" id="Satellite">
+          <img src="Satellite.png" alt="Satellite" width="40" height="40">
+      </button>
+      <p id="Satellitecost"></p>
+      <p id="Satellitelevel"></p>
+  </div>
+</div>
+
+
+    <script>
+        let Clicks = 0.00;
+        let Asteroidcost = 50.0;
+        let Asteroidlevel = 0;
+        let Automaticcost = 10.0;
+        let Automaticlevel = 0;
+        let Satellitecost = 200.0;
+        let Satellitelevel = 0;
+        let AutoUpgradeBought = false;
+        let AutomaticMultiplier = 1.0;
+        let Autoupgrade1Bought = false;
+        let Automatic1Multiplier = 1.0;
+        let Autoupgrade3Bought = false;
+        let Automatic3Multiplier = 1.0
+
+        function updateClicks(){
+        document.getElementById('Clicks').innerHTML = `klikkauksia: ${Clicks.toFixed(2)}`;
+        document.getElementById('Asteroidcost').innerHTML = `Asteroidin hinta: ${Asteroidcost.toFixed(2)}`;
+        document.getElementById('Automaticcost').innerHTML = `Automaattin hinta: ${Automaticcost.toFixed(2)}`;
+        document.getElementById('Asteroidlevel').innerHTML = `Asteroidin taso: ${Asteroidlevel.toFixed(0)}`;
+        document.getElementById('Automaticlevel').innerHTML = `Automaatin taso: ${Automaticlevel.toFixed(0)}`;
+        document.getElementById('Satellitecost').innerHTML = `Satelliitin hinta: ${Satellitecost.toFixed(2)}`;
+        document.getElementById('Satellitelevel').innerHTML = `Satelliitin taso: ${Satellitelevel.toFixed(0)}`;
+
+
+        if (Autoupgrade1Bought) {
+            document.getElementById('Upgradeautomatic1').innerHTML = "Ostettu!";
+            document.getElementById('Autoupgrade1').disabled = true;
+        } else if (Asteroidlevel >= 15) {
+            document.getElementById('Upgradeautomatic1').innerHTML = "Osta parannus: +100% automaatti (500)";
+            document.getElementById('Autoupgrade1').disabled = false;
+        } else {
+            document.getElementById('Upgradeautomatic1').innerHTML = `Tarvitset 15 asteroidia`;
+            document.getElementById('Autoupgrade1').disabled = true;
+        }
+        
+        if (AutoUpgradeBought){
+            document.getElementById('Upgradeautomatics').innerHTML = "Ostettu!";
+            document.getElementById('AutoUpgrade').disabled = true;
+        } else if (Satellitelevel >= 25){
+            document.getElementById('Upgradeautomatics').innerHTML = "Osta parannus: +150% automaatti (1000)";
+            document.getElementById('AutoUpgrade').disabled = false;
+        } else {
+            document.getElementById('Upgradeautomatics').innerHTML = `Tarvitset 25 satelliittia`;
+            document.getElementById('AutoUpgrade').disabled = true;
+        }
+
+        if (Autoupgrade3Bought) {
+            document.getElementById('Upgradeautomatic3').innerHTML = "Ostettu!";
+            document.getElementById('Autoupgrade3').disabled = true;
+        } else if (Automaticlevel >= 50 && Asteroidlevel >= 50) {
+            document.getElementById('Upgradeautomatic3').innerHTML = "Osta parannus: +100% Satelliitti (5000)";
+            document.getElementById('Autoupgrade3').disabled = false;
+        } else {
+            document.getElementById('Upgradeautomatic3').innerHTML = `Tarvitset 50 automaattia ja 50 asteroidia`;
+            document.getElementById('Autoupgrade3').disabled = true;
+        }
+
+        }
+
+        updateClicks();
+
+        document.getElementById('Kuu').addEventListener('click', function(event){
+            Clicks += 1 + (Asteroidlevel * 0.2);
+            updateClicks();
+        })
+        document.getElementById('Asteroidi').addEventListener('click', function(event){
+            if (Clicks >= Asteroidcost){
+                Clicks -= Asteroidcost;        
+                Asteroidcost *= 1.06;
+                Asteroidlevel += 1;
+                updateClicks();}
+        })
+        updateClicks();
+
+        document.getElementById('Automatic').addEventListener('click', function(event){
+            if (Clicks >= Automaticcost){
+                Clicks -= Automaticcost;        
+                Automaticcost *= 1.08;
+                Automaticlevel += 1;
+                updateClicks();}
+        })
+        updateClicks();
+        setInterval(function(){
+            Clicks += Automaticlevel * 0.1 * Automatic1Multiplier * AutomaticMultiplier;
+            updateClicks();
+        }, 1000);
+
+        document.getElementById('Satellite').addEventListener('click', function(event){
+            if (Clicks >= Satellitecost){
+                Clicks -= Satellitecost;        
+                Satellitecost *= 1.06;
+                Satellitelevel += 1;
+                updateClicks();}
+        })
+        updateClicks();
+        setInterval(function(){
+            Clicks += Satellitelevel * 2.5 * Automatic3Multiplier;
+            updateClicks();
+        }, 1000);
+
+        document.getElementById('Autoupgrade1').addEventListener('click', function(){
+            if (Clicks >= 500 && Asteroidlevel >= 15 && !Autoupgrade1Bought) {
+                Clicks -= 500;
+                Autoupgrade1Bought = true;
+                Automatic1Multiplier = 2.0;
+                document.getElementById('Autoupgrade1').disabled = true;
+                updateClicks();
+            }
+        })
+        document.getElementById('AutoUpgrade').addEventListener('click', function() {
+            if (Clicks >= 500 && Satellitelevel >= 25 && !AutoUpgradeBought) {            
+            Clicks -= 500;
+            AutoUpgradeBought = true;
+            AutomaticMultiplier = 2.5;
+            document.getElementById('AutoUpgrade').disabled = true;
+            updateClicks();
+        }
+    });
+
+        document.getElementById('Autoupgrade3').addEventListener('click', function(){
+            if (Clicks >= 5000 && Automaticlevel >= 50 && Asteroidlevel >= 50 && !Autoupgrade3Bought){
+            Clicks -= 5000;
+            Autoupgrade3Bought = true;
+            Automatic3Multiplier = 2.0;
+            document.getElementById('Autoupgrade3').disabled = true;
+            updateClicks();
+        }
+        });
+
+
+    </script>
+</body>
+</html>
